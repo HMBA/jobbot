@@ -7,9 +7,6 @@ class Utils:
         # Set driver executable path
         self.driver = webdriver.Chrome(executable_path='/Users/apple/Desktop/GoWork Web Scrapping (Python)/chromedriver')
 
-        # Set region for indeed
-        self.region = "ng"
-
         # Setting Xpath for elements of indeed web page
         self.x_paths = {}
         self.x_paths['li_list'] = '/html/body/main/div/div[1]/div/div/div[5]/div[1]/div[5]/div/ul/li'
@@ -22,7 +19,7 @@ class Utils:
     and then adding jobs per page to the jobs_per_page list
     and then returning jobs_per_page list
     """
-    def getdata(self, url: str):
+    def get_data(self, url: str):
         # HEADERS ={"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"}
         self.driver.get(url)
         jobs_per_page = []
@@ -71,55 +68,22 @@ class Utils:
         finally:
             # Close the browser
             self.driver.quit()
-            exit(0)
 
-    # Get Html code using parse
-    def html_code(self, url):
-    
-        # pass the url
-        # into getdata function
-        htmldata = self.getdata(url)
-    
+            # return jobs
+            return jobs_per_page
 
-    # filter job data using
-    # find_all function
-    def job_data(self, soup):
-
-        # find the Html tag
-        # with find()
-        # and convert into string
-        data_str = ""
-        for item in soup.find_all("a", class_="jobtitle turnstileLink"):
-            data_str = data_str + item.get_text()
-        result_1 = data_str.split("\n")
-        return(result_1)
-
-    def company_data(self, soup):
-
-        # find the Html tag
-        # with find()
-        # and convert into string
-        data_str = ""
-        result = ""
-        for item in soup.find_all("div", class_="sjcl"):
-            data_str = data_str + item.get_text()
-        result_1 = data_str.split("\n")
-    
-        res = []
-        for i in range(1, len(result_1)):
-            if len(result_1[i]) > 1:
-                res.append(result_1[i])
-        return(res)
-
-
-    def search_jobs(self, job_name: str):
+    """
+    Main Function to control the searching of jobs
+    on the provided region and job keywords
+    """
+    def search_jobs(self, region: str, job_name: str):
 
         """
         Arranging data for the job search
         Creating the url request for the job scrapping
         """
         job_name_split = job_name.split(" ")
-        base_url = "https://" + self.region + ".indeed.com/"
+        base_url = "https://" + region + ".indeed.com/"
 
         url = base_url
 
@@ -137,22 +101,13 @@ class Utils:
         Scrapping on the created URL above and 
         returning the jobs 
         """
-        soup = self.html_code(url)
+        job_data = self.get_data(url)
+
+        # Printing the returned jobs
+        for jobs in job_data:
+            print("\n\n========================\n\n")
+            for job in jobs:
+                print(job, end="\n===============\n")
         
-        # call job and company data
-        # and store into it var
-        job_res = self.job_data(soup)
-        com_res = self.company_data(soup)
-    
-        # Traverse the both data
-        temp = 0
-        for i in range(1, len(job_res)):
-            j = temp
-            for j in range(temp, 2+temp):
-                print("Company Name and Address : " + com_res[j])
-    
-            temp = j
-            print("Job : " + job_res[i])
-            print("-----------------------------")
 
 

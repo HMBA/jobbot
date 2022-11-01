@@ -9,6 +9,7 @@ class Main:
             self.job_search = self.args[0]
             self.expiry_date = self.args[1] 
             self.utils = Utils()
+            self.region = "ng"
             self.search_jobs()
         
         except IndexError:
@@ -24,7 +25,7 @@ class Main:
         return args
 
     def search_jobs(self):
-        self.utils.search_jobs(self.job_search)
+        self.utils.search_jobs(self.region, self.job_search)
 
 
 main = Main()
