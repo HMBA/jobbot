@@ -7,16 +7,16 @@ class Main:
     def __init__(self) -> None:
         try:
             # Getting arguments
-            self.args = self.get_args()            
-            self.job_search = self.args[0]
-            self.expiry_date = self.args[1] 
+            self.args = self.get_args()  
+            self.region = self.args[0]          
+            self.job_search = self.args[1]
+            self.expiry_date = self.args[2] 
 
             self.utils = Utils()
-            self.region = "ng"
             self.search_jobs()
         
         except IndexError:
-            print("Must Pass 2 Params. Job Search and Expiry Date!\nExample:\npython3 main.py 'Web Developer' '10/20/2022'")
+            print("Must Pass 3 Params. Job Search and Expiry Date!\nExample:\npython3 main.py 'ng' 'Web Developer' '10/20/2022'")
 
     def get_args(self):
         n = len(sys.argv)
