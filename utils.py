@@ -4,8 +4,18 @@ from selenium import webdriver
 class Utils:
 
     def __init__(self) -> None:
-        # Set driver executable path
-        self.driver = webdriver.Chrome(executable_path='/Users/apple/Desktop/GoWork Web Scrapping (Python)/chromedriver')
+        # Configurations
+        user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'   
+        executable_path = './chromedriver'
+
+        # Setting driver options
+        op = webdriver.ChromeOptions()
+        op.add_argument('headless')
+        op.add_argument("--window-size=1920x1080") 
+        op.add_argument('user-agent={0}'.format(user_agent))
+
+        # Creating driver
+        self.driver = webdriver.Chrome(executable_path= executable_path, options=op)
 
         # Setting Xpath for elements of indeed web page
         self.x_paths = {}
@@ -15,14 +25,11 @@ class Utils:
 
     
     """
-    Looping through each page and adding job to the jobs per list
-    and then adding jobs per page to the jobs_per_page list
-    and then returning jobs_per_page list
+    Looping through each page and adding job to the jobs list
     """
     def get_data(self, url: str):
         # HEADERS ={"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"}
         self.driver.get(url)
-        jobs_per_page = []
         jobs = []
         count = 0
         try:
@@ -30,18 +37,33 @@ class Utils:
                 sleep(2)
 
                 # Getting jobs
-                li_list = self.driver.find_elements('xpath', self.x_paths['li_list'])
-                
-                # Adding jobs in our jobs list
-                for i in range(len(li_list)):
-                    li = li_list[i]
-                    job = li.text.split("\n")
+                table1 = self.driver.find_elements('class name', 'jobCard_mainContent')
+                table2 = self.driver.find_elements('class name', 'jobCardShelfContainer')
+
+                # Add job object to jobs list
+                for i in range(len(table1)):
+                    table1_text_split = table1[i].text.split("\n")
+                    table2_text_split = table2[i].text.split("\n")
+
+                    # Creating job object
+                    job_title = table1_text_split[0]
+                    job_company = table1_text_split[2] if table1_text_split[1] == 'new' else table1_text_split[1]
+                    job_location = table1_text_split[3] if table1_text_split[1] == 'new' else table1_text_split[2]
+                    job_type = table1_text_split[len(table1_text_split) - 1]
+
+                    job_description = ""
+
+                    for a in range(len(table2_text_split)):
+                        if a != len(table2_text_split) - 2:
+                            job_description += table2_text_split[a]
+                        else:
+                            break
+                    job = Job(job_title, job_company, job_location, job_type, job_description)
+                    # Adding object to jobs list
                     jobs.append(job)
 
-                # Adding jobs list in jobs_per_page list
-                jobs_per_page.append(jobs)
+                
                 next_arrow_button = None
-                print("Page:", len(jobs_per_page))
 
                 # If on first page 
                 if count == 0:
@@ -70,7 +92,7 @@ class Utils:
             self.driver.quit()
 
             # return jobs
-            return jobs_per_page
+            return jobs
 
     """
     Main Function to control the searching of jobs
@@ -95,19 +117,42 @@ class Utils:
                 url += name
             else:
                 url += name + "+"
-        print(url)
             
         """
         Scrapping on the created URL above and 
         returning the jobs 
         """
-        job_data = self.get_data(url)
+        jobs_data = self.get_data(url)
 
-        # Printing the returned jobs
-        for jobs in job_data:
-            print("\n\n========================\n\n")
-            for job in jobs:
-                print(job, end="\n===============\n")
+        # Returning jobs data
+        return jobs_data
         
 
 
+class Job:
+
+    def __init__(self, title: str, company: str, location: str, job_type: str, job_description: str) -> None:
+        self.title = title
+        self.company = company
+        self.location = location
+        self.job_type = job_type
+        self.job_description = job_description
+
+    def get_title(self):
+        return self.title
+
+    def get_company(self):
+        return self.company
+
+    def get_location(self):
+        return self.location
+
+    def get_job_type(self):
+        return self.job_type
+
+    def get_job_description(self):
+        return self.job_description
+
+    def __str__(self) -> str:
+        returnString = f"Title: {self.title}\nCompany: {self.company}\nLocation: {self.location}\nJob Type: {self.job_type}\nJob Description: {self.job_description}"
+        return returnString

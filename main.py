@@ -1,13 +1,16 @@
 import sys
+import time
 from utils import Utils
 
 class Main:
 
     def __init__(self) -> None:
         try:
+            # Getting arguments
             self.args = self.get_args()            
             self.job_search = self.args[0]
             self.expiry_date = self.args[1] 
+
             self.utils = Utils()
             self.region = "ng"
             self.search_jobs()
@@ -25,7 +28,18 @@ class Main:
         return args
 
     def search_jobs(self):
-        self.utils.search_jobs(self.region, self.job_search)
+        # Getting start time
+        start_time = time.time()
 
+        # Getting jobs
+        print('Getting Jobs...')
+        jobs = self.utils.search_jobs(self.region, self.job_search)
+        print('Operation Successful!\nJobs Scrapped:', len(jobs))
+
+        # Getting end time
+        end_time = time.time()
+
+        # Calculating program runtime
+        print("Script execution time: %s seconds" % round(end_time - start_time))
 
 main = Main()
