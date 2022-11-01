@@ -32,7 +32,7 @@ class Main:
         start_time = time.time()
 
         # Getting jobs
-        print('Getting Jobs...')
+        print('\nGetting Jobs...')
         jobs = self.utils.search_jobs(self.region, self.job_search)
         print('Operation Successful!\nJobs Scrapped:', len(jobs))
 
@@ -40,6 +40,6 @@ class Main:
         end_time = time.time()
 
         # Calculating program runtime
-        print("Script execution time: %s seconds" % round(end_time - start_time))
+        print("Script execution time: %s seconds\n" % round(end_time - start_time))
 
 main = Main()

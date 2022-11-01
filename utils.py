@@ -19,7 +19,6 @@ class Utils:
 
         # Setting Xpath for elements of indeed web page
         self.x_paths = {}
-        self.x_paths['li_list'] = '/html/body/main/div/div[1]/div/div/div[5]/div[1]/div[5]/div/ul/li'
         self.x_paths['next_arrow_button_page1'] = '/html/body/main/div/div[1]/div/div/div[5]/div[1]/nav/div[6]/a'
         self.x_paths['next_arrow_button_page2'] = '/html/body/main/div/div[1]/div/div/div[5]/div[1]/nav/div[7]/a'
 
