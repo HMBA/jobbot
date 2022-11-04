@@ -46,12 +46,15 @@ class Utils:
                 for i in range(len(table1)):
                     table1_text_split = table1[i].text.split("\n")
                     table2_text_split = table2[i].text.split("\n")
+                    # print('Table 1 =',table1_text_split, end="\n\n=============\n\n\n")
+                    # print('Table 2 =',table2_text_split, end="\n\n=============\n\n\n")
 
                     # Creating job object
                     job_title = table1_text_split[0]
                     job_company = table1_text_split[2] if table1_text_split[1] == 'new' else table1_text_split[1]
                     job_location = table1_text_split[3] if table1_text_split[1] == 'new' else table1_text_split[2]
                     job_type = table1_text_split[len(table1_text_split) - 1]
+                    job_posted_date = table2_text_split[len(table2_text_split) - 1].split('More')[0]
 
                     job_description = ""
 
@@ -60,7 +63,7 @@ class Utils:
                             job_description += table2_text_split[a]
                         else:
                             break
-                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description }
+                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description, "postedDate": job_posted_date }
                     # Adding object to jobs list
                     jobs.append(json.dumps(job))
 
