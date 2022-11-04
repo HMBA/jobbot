@@ -11,6 +11,7 @@ class Main:
             self.region = self.args[0]          
             self.job_search = self.args[1]
             self.expiry_date = self.args[2] 
+            self.debug_mode = False
 
             self.utils = Utils()
             self.search_jobs()
@@ -32,14 +33,18 @@ class Main:
         start_time = time.time()
 
         # Getting jobs
-        print('\nGetting Jobs...')
+        if self.debug_mode:
+            print('\nGetting Jobs...')
         jobs = self.utils.search_jobs(self.region, self.job_search)
-        print('Operation Successful!\nJobs Scrapped:', len(jobs))
+        print(jobs)
+        if self.debug_mode:
+            print('Operation Successful!\nJobs Scrapped:', len(jobs))
 
         # Getting end time
         end_time = time.time()
 
         # Calculating program runtime
-        print("Script execution time: %s seconds\n" % round(end_time - start_time))
+        if self.debug_mode:
+            print("Script execution time: %s seconds\n" % round(end_time - start_time))
 
 main = Main()
