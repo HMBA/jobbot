@@ -1,5 +1,6 @@
 from time import sleep
 from selenium import webdriver
+import json
 
 class Utils:
 
@@ -57,9 +58,9 @@ class Utils:
                             job_description += table2_text_split[a]
                         else:
                             break
-                    job = Job(job_title, job_company, job_location, job_type, job_description)
+                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description }
                     # Adding object to jobs list
-                    jobs.append(job)
+                    jobs.append(json.dumps(job))
 
                 
                 next_arrow_button = None
@@ -125,33 +126,4 @@ class Utils:
 
         # Returning jobs data
         return jobs_data
-        
-
-
-class Job:
-
-    def __init__(self, title: str, company: str, location: str, job_type: str, job_description: str) -> None:
-        self.title = title
-        self.company = company
-        self.location = location
-        self.job_type = job_type
-        self.job_description = job_description
-
-    def get_title(self):
-        return self.title
-
-    def get_company(self):
-        return self.company
-
-    def get_location(self):
-        return self.location
-
-    def get_job_type(self):
-        return self.job_type
-
-    def get_job_description(self):
-        return self.job_description
-
-    def __str__(self) -> str:
-        returnString = f"Title: {self.title}\nCompany: {self.company}\nLocation: {self.location}\nJob Type: {self.job_type}\nJob Description: {self.job_description}"
-        return returnString
+    
