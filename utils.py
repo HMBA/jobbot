@@ -19,6 +19,8 @@ class Utils:
 
         # Creating driver
         self.driver = webdriver.Chrome(executable_path= executable_path, options=op)
+        self.driver.implicitly_wait(0.5)
+        self.driver.maximize_window()
 
         # Setting Xpath for elements of indeed web page
         self.x_paths = {}
@@ -41,13 +43,25 @@ class Utils:
                 # Getting jobs
                 table1 = self.driver.find_elements('class name', 'jobCard_mainContent')
                 table2 = self.driver.find_elements('class name', 'jobCardShelfContainer')
+                containers = self.driver.find_elements('class name', 'slider_container')
 
                 # Add job object to jobs list
                 for i in range(len(table1)):
                     table1_text_split = table1[i].text.split("\n")
                     table2_text_split = table2[i].text.split("\n")
-                    # print('Table 1 =',table1_text_split, end="\n\n=============\n\n\n")
-                    # print('Table 2 =',table2_text_split, end="\n\n=============\n\n\n")
+                    
+                    job_salary = ""
+                    if containers[i]:
+                        try:
+                            containers[i].click();
+                            sleep(2)
+                            salary = self.driver.find_element('id', 'jobDetailsSection')
+                            if salary:
+                                salary_text_split = salary.text.split("\n")
+                                job_salary = salary_text_split[2]
+
+                        except Exception:
+                            print("", end="")
 
                     # Creating job object
                     job_title = table1_text_split[0]
@@ -63,7 +77,7 @@ class Utils:
                             job_description += table2_text_split[a]
                         else:
                             break
-                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description, "postedDate": job_posted_date }
+                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description, "postedDate": job_posted_date, "jobSalary": job_salary }
                     # Adding object to jobs list
                     jobs.append(json.dumps(job))
 
@@ -91,7 +105,7 @@ class Utils:
                 next_arrow_button.click()
 
         except Exception as e:
-            print(e.args)
+            print("", end="")
         finally:
             # Close the browser
             self.driver.quit()
