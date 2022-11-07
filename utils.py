@@ -51,15 +51,20 @@ class Utils:
                     table2_text_split = table2[i].text.split("\n")
                     
                     job_salary = ""
+                    job_full_description = ""
+
                     if containers[i]:
                         try:
                             containers[i].click();
                             sleep(2)
                             salary = self.driver.find_element('id', 'jobDetailsSection')
+                            full_description = self.driver.find_element("id", 'jobDescriptionText')
                             if salary:
                                 salary_text_split = salary.text.split("\n")
                                 job_salary = salary_text_split[2]
-
+                            if full_description:
+                                job_full_description = full_description.text
+                                
                         except Exception:
                             print("", end="")
 
@@ -77,7 +82,7 @@ class Utils:
                             job_description += table2_text_split[a]
                         else:
                             break
-                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description, "postedDate": job_posted_date, "jobSalary": job_salary }
+                    job = { "jobTitle": job_title, "jobCompany": job_company, "jobLocation": job_location, "jobType": job_type, "jobDescription": job_description, "postedDate": job_posted_date, "jobSalary": job_salary, "jobFullDescription": job_full_description }
                     # Adding object to jobs list
                     jobs.append(json.dumps(job))
 
